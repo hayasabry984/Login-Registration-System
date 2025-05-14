@@ -1,0 +1,97 @@
+plugins {
+    id 'java'
+    //enable Spring Boot features
+    id 'org.springframework.boot' version '3.4.5' //new
+    id 'io.spring.dependency-management' version '1.1.7'  //new
+    id 'application' //specify the main class
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+//Main Class Configuration: Specify the main class
+application {
+    mainClass = 'com.example.Main'
+}
+
+//Java Version
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+
+//configurations block for Lombok
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    //`spring-boot-starter-web`: Enables RESTful APIs with Spring MVC.
+    //spring web dependency used to build REST APIs and handle HTTP requests
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    //`spring-boot-starter-security`: Provides authentication and authorization.
+    //spring security for authentication, authorization, and securing your API endpoints
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    //`spring-boot-starter-data-jpa`: Simplifies database operations with Hibernate.
+    //spring data JPA allows you to interact with the database using java objects (ORM)
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //spring-boot-starter-mail`: Enables email sending for verification
+    //java mail sender to send verfication emails
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    //comprehensive Validation Dependency
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //`postgresql`: Connects to PostgreSQL
+    //PostgreSQL driver to connect the application to the database
+    runtimeOnly 'org.postgresql:postgresql'
+
+    //Spring Boot DevTools (Optional but helpful) to enable hot-reloading during development so there is no need to restart the app on every code change
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    //`lombok`: Reduces boilerplate code (e.g., getters/setters)
+    //Lombok to reduce boilerplate code, it auto generates setters, getters, constructors, toString(), etc.
+    annotationProcessor 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok' //the original project
+
+    //`jjwt-*`: Handles JWT creation and validation
+    //JJWT (Java JWT) to create, sign, and verify JWT tokens
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    //SECRET KEY, MAIL, AND PASSWORD should be in a .env file or environment variables, not application.properties, to avoid exposing sensitive data in version control.
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+    //Test dependencies ensure unit and integration tests
+    // testing using spring boot's testing libraries
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test' //the original project
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //the original project
+
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+/*
+Next Steps:
+Ensure the .env file is set up with correct values (e.g., SPRING_DATASOURCE_URL, JWT_SECRET_KEY, SUPPORT_EMAIL, APP_PASSWORD).
+Run gradle build to verify dependency resolution.
+If implementing RSA key management, ensure jjwt supports RSA signing (or update JwtService as shown in the previous response).
+ */
