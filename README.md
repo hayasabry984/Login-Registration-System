@@ -1,6 +1,9 @@
 # Login-Registration-System
-This app uses Layered Architecture
+________________________________________
 
+________________________________________
+This app uses Layered Architecture
+________________________________________
 Feature	--> Support
 
 User API --> Spring Web
