@@ -1,7 +1,5 @@
 # Login-Registration-System
-________________________________________
 
-________________________________________
 This app uses Layered Architecture
 ________________________________________
 Feature	--> Support
