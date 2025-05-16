@@ -1,97 +1,228 @@
-plugins {
-    id 'java'
-    //enable Spring Boot features
-    id 'org.springframework.boot' version '3.4.5' //new
-    id 'io.spring.dependency-management' version '1.1.7'  //new
-    id 'application' //specify the main class
+/*
+it’s a Spring Boot project configured with Gradle (instead of Maven).
+Gradle is a build tool that defines:
+1.	how your project is built
+2.	what dependencies it uses
+3.	and how it runs.
+*/
+        plugins {
+    id 'java' //Enables Java support
+    id 'org.springframework.boot' version '3.4.5' //Adds Spring Boot features (e.g. auto-configuration, embedded server).
+    id 'io.spring.dependency-management' version '1.1.7'  //Helps manage versions of Spring dependencies consistently
+    id 'application' //Lets you define the main class and run the app via gradle run
 }
-
-group = 'com.example'
-version = '1.0-SNAPSHOT'
+group = 'com.example' //Defines the base package (com.example)
+version = '1.0-SNAPSHOT' //a snapshot version. This is metadata useful for publishing your project (optional for local projects).
 
 //Main Class Configuration: Specify the main class
 application {
-    mainClass = 'com.example.Main'
+    mainClass = 'com.example.Main' //Specifies the entry point of your app (Main.java class in com.example package)
 }
 
 //Java Version
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(22)
+        languageVersion = JavaLanguageVersion.of(22) //Toolchains make sure Gradle uses the correct version of the JDK even if it’s not the system default.
     }
 }
 
 //configurations block for Lombok
 configurations {
     compileOnly {
-        extendsFrom annotationProcessor
+        extendsFrom annotationProcessor //configurations block Ensures annotation processors like Lombok are available at compile time but not bundled with the app
     }
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral() //repositories block Gradle to fetch dependencies from Maven Central.
 }
 
 dependencies {
+    //Testing
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    //Test dependencies ensure unit and integration tests
+    // testing using spring boot's testing libraries
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    //For writing and running unit/integration tests using JUnit and Spring's testing tools.
 
-    //`spring-boot-starter-web`: Enables RESTful APIs with Spring MVC.
-    //spring web dependency used to build REST APIs and handle HTTP requests
+    /*
+A RESTful API is a way for programs (like frontend apps, mobile apps, or Postman) to communicate with your backend server using the internet (HTTP).
+
+🧠 Real-Life Analogy
+Think of it like a waiter in a restaurant:
+
+You (the client) ask the waiter (API) to bring you food (data).
+
+The waiter goes to the kitchen (server), gets the food (data), and brings it back.
+
+Authentication	Verifying who you are	Logging in with email + password
+Authorization	Checking what you can access	Can you delete a post? Can you view admin?
+
+💡 Example in a Login System:
+Action	HTTP Method	URL	Description
+Register new user	POST	/api/auth/register	Client sends user info to register
+Login	POST	/api/auth/login	Client sends email & password
+Verify email	GET	/api/auth/verify	Click link to verify account
+
+In your Spring Boot Login & Registration app, your server is the Spring Boot application itself.
+
+💻 So, where exactly is the "server"?
+When you run your app (from IntelliJ or terminal), Spring Boot:
+
+Starts an embedded server (by default it's called Tomcat).
+
+This server listens for HTTP requests (like from Postman, browser, or frontend app).
+
+It usually runs on:
+📍 http://localhost:8080 — this is your server's address during development.
+
+🔧 Example
+Let's say your AuthController has this:
+
+@PostMapping("/register")
+public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
+    return ResponseEntity.ok("User registered!");
+}
+When you run your app, this server will:
+
+Accept POST requests at: http://localhost:8080/api/auth/register
+
+Handle the request in your controller --> A controller receives requests, processes them (with help from services), and returns a response.
+
+Return a response to the client (like Postman)
+A client sends a POST request to /api/auth/register
+
+AuthController handles it
+
+It may call a service to register the user
+
+Then returns a response
+Controller = Entry point for web requests ✅
+It connects the outside world to your app's logic
+💡 Simple Definition:
+A service does the real work behind the scenes — like creating a user, verifying a password, sending an email, etc.
+
+🧠 Role in the App:
+It acts as the middle layer between:
+
+The controller (which handles requests)
+
+And the repository (which talks to the database)
+🔁 Flow Summary
+
+Frontend or Postman -----> [Your Spring Boot App (Server)] -----> Database (PostgreSQL)
+                           (Embedded Tomcat Server)
+So you don’t need to install or set up a separate server — Spring Boot runs the server for you automatically.
+the main entities (or actors):
+ 1. Client: Enters email, password, etc., to register or log in.
+
+2. Frontend simulation using postman: Sends HTTP requests (like register/login) to your backend.
+
+3. Backend (Spring Boot app) Your Java application (the code you're writing).
+ . Receives requests from the frontend.
+ . Handles business logic (registration, login, email verification).
+ . Validates input, encrypts passwords, creates JWT tokens.
+ . Talks to the database.
+ . Sends responses back.
+
+4. Server (Tomcat inside Spring Boot) The "engine" running your backend.
+
+ . Listens for requests on http://localhost:8080
+ . Routes them to your Java code (controllers).
+ . Sends responses to the client.
+
+5. Database (A PostgreSQL server you set up (e.g., authdb))
+ . Stores user accounts (email, password hash, etc.).
+ . Can store verification tokens, roles, etc.
+ . Backend reads/writes data here using Spring Data JPA.
+
+6. Database Client (pgAdmin or CLI):
+Tool for you, the developer to Let you manually view or manage database tables and data.
+
+Client: Uses the system
+Frontend: Sends user data to backend (Postman/UI)
+Backend: Processes data, logic, talks to DB
+Server (Tomcat): Runs the backend and serves API endpoints
+Database: Stores persistent user data
+DB Client: Lets you inspect/manage the DB
+*/
+    //Web and APIs
+    //enables Spring MVC, which you use to build RESTful HTTP APIs for login, registration, email verification, etc and handle HTTP requests
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //For creating REST APIs using Spring MVC.
 
+    //Security
     //`spring-boot-starter-security`: Provides authentication and authorization.
     //spring security for authentication, authorization, and securing your API endpoints
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    //Adds Spring Security to handle login, registration, roles, password encryption, etc.
 
+    //Database (JPA + PostgreSQL)
     //`spring-boot-starter-data-jpa`: Simplifies database operations with Hibernate.
     //spring data JPA allows you to interact with the database using java objects (ORM)
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    //spring-boot-starter-mail`: Enables email sending for verification
-    //java mail sender to send verfication emails
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-
-    //comprehensive Validation Dependency
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    //For database interaction using Java classes (ORM)
 
     //`postgresql`: Connects to PostgreSQL
     //PostgreSQL driver to connect the application to the database
     runtimeOnly 'org.postgresql:postgresql'
+    //PostgreSQL driver allows connecting your app to a PostgreSQL database.
 
+
+    //Email
+    //spring-boot-starter-mail`: Enables email sending for verification
+    //java mail sender to send verfication emails
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    //Lets your app send emails (e.g., for account verification, password reset).
+
+    //Input validation
+    //comprehensive Validation Dependency
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //Used to validate user input (e.g., email format, password rules).
+    //spring-boot-starter-data-jpa: For database interaction using Java classes (ORM).
+
+    //Dev tools (for hot-reloading)
     //Spring Boot DevTools (Optional but helpful) to enable hot-reloading during development so there is no need to restart the app on every code change
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    ////Automatically restarts your app when files change—useful during development.
 
+    //Lombok
     //`lombok`: Reduces boilerplate code (e.g., getters/setters)
     //Lombok to reduce boilerplate code, it auto generates setters, getters, constructors, toString(), etc.
     annotationProcessor 'org.projectlombok:lombok'
     compileOnly 'org.projectlombok:lombok' //the original project
+    //Auto-generates boilerplate code like getters, setters, constructors, etc.
 
+    //JWT (JSON Web Tokens)
     //`jjwt-*`: Handles JWT creation and validation
     //JJWT (Java JWT) to create, sign, and verify JWT tokens
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    //Handles creating and verifying JWTs for secure authentication.
 
+    //Environment variables (.env)
     //SECRET KEY, MAIL, AND PASSWORD should be in a .env file or environment variables, not application.properties, to avoid exposing sensitive data in version control.
     implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+    // Loads environment variables from a .env file (e.g., secret keys, passwords) so they aren’t exposed in application.properties or version control.
 
-    //Test dependencies ensure unit and integration tests
-    // testing using spring boot's testing libraries
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test' //the original project
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher' //the original project
+
+
 
 }
 
 test {
-    useJUnitPlatform()
+    useJUnitPlatform() //Tells Gradle to use the JUnit 5 platform for running tests.
 }
 
 
-/*
-Next Steps:
-Ensure the .env file is set up with correct values (e.g., SPRING_DATASOURCE_URL, JWT_SECRET_KEY, SUPPORT_EMAIL, APP_PASSWORD).
-Run gradle build to verify dependency resolution.
-If implementing RSA key management, ensure jjwt supports RSA signing (or update JwtService as shown in the previous response).
- */
+
+
+
+
+
+
+
