@@ -123,3 +123,16 @@ Server (Tomcat): Runs the backend and serves API endpoints
 Database: Stores persistent user data
 
 DB Client: Lets you inspect/manage the DB
+
+________________________________________
+
+JWT: 
+(JSON Web Token) is a compact, secure way to transmit user identity information between systems.
+
+After a user logs in, the server creates a JWT (a special token) and sends it back.
+
+The client stores it (e.g., in local storage) and includes it in every future request.
+
+The server validates the token instead of asking the user to log in again.
+
+Used for: Authentication & Authorization 
