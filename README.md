@@ -48,6 +48,7 @@ Flow :
 Frontend or Postman -----> Your Spring Boot App (Server) (Embedded Tomcat Server) -----> Database (PostgreSQL)                       
 ________________________________________
 
+
 2) the main entities (or actors):
 1. Client: Enters email, password, etc., to register or log in.
 ________________________________________
