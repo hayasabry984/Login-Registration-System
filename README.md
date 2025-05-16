@@ -126,13 +126,36 @@ DB Client: Lets you inspect/manage the DB
 
 ________________________________________
 
-JWT: 
-(JSON Web Token) is a compact, secure way to transmit user identity information between systems.
+JWT (JSON Web Token)
+A JWT is a compact, secure way to transmit user data (like user ID or roles) between client and server after login. It has 3 parts:
 
-After a user logs in, the server creates a JWT (a special token) and sends it back.
+Header – contains token type and signing algorithm
 
-The client stores it (e.g., in local storage) and includes it in every future request.
+Payload – contains user data (claims)
 
-The server validates the token instead of asking the user to log in again.
+Signature – ensures the token is not tampered with
 
-Used for: Authentication & Authorization 
+________________________________________
+
+JWT_SECRET_KEY
+The JWT_SECRET_KEY is used by the server to:
+
+Sign the token when creating it
+
+Verify the token when receiving it
+
+If the token’s signature doesn’t match (e.g., someone changed the payload), it’s rejected.
+
+________________________________________
+
+How it works 
+
+User logs in
+
+Server verifies credentials and creates a JWT signed with JWT_SECRET_KEY
+
+JWT is sent to the client
+
+Client sends JWT with each request (usually in the Authorization header)
+
+Server uses JWT_SECRET_KEY to verify and extract user info from the token
