@@ -136,6 +136,11 @@ Payload – contains user data (claims)
 
 Signature – ensures the token is not tampered with
 
+JWTs are serialized and sent to the client as JSON after login/registration.
+
+The JWT filter on the server handles incoming requests that contain that token — to verify it and authenticate the user.
+
+🔐 This ensures secure access to protected endpoints.
 ________________________________________
 
 JWT_SECRET_KEY
@@ -160,3 +165,51 @@ JWT is sent to the client
 Client sends JWT with each request (usually in the Authorization header)
 
 Server uses JWT_SECRET_KEY to verify and extract user info from the token
+
+________________________________________
+Full Flow from Client to Database and Back 
+Client Sends Request
+   (e.g., user submits login or registration form)
+
+▶ Controller Layer
+Receives HTTP request (e.g., /register, /login)
+Parses it into a DTO like RegisterRequest or LoginRequest
+Calls Service Layer, passing the DTO
+
+▶ DTO Package
+Used by the controller to collect and pass user input
+Keeps internal models (entities) safe from exposure
+
+▶ Service Layer
+Takes the DTO, applies business logic:
+Validates input
+Hashes password using a bean from config
+Creates a User entity from the DTO
+Calls Repository to save user
+Generates JWT
+Prepares a Response object to return
+Returns a response DTO like AuthenticationResponse
+
+▶ Repository Layer
+Saves the User (Entity) to the database
+May also fetch user by email/username for login
+
+▶ Model/Entity Layer
+User class defines the table structure
+Used internally by Service and Repository
+
+▶ Responses Package
+Contains the final objects (e.g., AuthenticationResponse, MessageResponse) returned to the Controller
+These are serialized into JSON and sent back to the client
+
+▶ Config Package
+Provides:
+Password encoder bean
+JWT token filter
+Security configuration for route access
+CORS settings, etc.
+Used across the Service Layer and security system
+
+Back to Client
+Controller returns the Response DTO to the frontend
+Client gets result (e.g., login success, token, error message)
