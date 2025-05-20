@@ -213,3 +213,15 @@ Used across the Service Layer and security system
 Back to Client
 Controller returns the Response DTO to the frontend
 Client gets result (e.g., login success, token, error message)
+
+________________________________________
+DTOs:
+- Defines objects to transfer data between the client and server, avoiding direct exposure of the `User` entity.
+- decouple the API from the database model, improving security and flexibility.
+- DTO validate and structure incoming/outgoing data for API endpoints.
+- Each DTO is tailored to a specific endpoint’s input/output needs.
+
+1) RegisterUserDto: Holds registration data (username, email, password).
+2) VerifyUserDto: Holds verification data (email, code).
+3) LoginUserDto: Holds login credentials (email, password).
+4) LoginResponse: Returns the JWT and expiration time after login.
